@@ -18,6 +18,16 @@ amending commits. **Reply footer:**
 
 **Duplicate check:** `/workspace/mcic-ai-helpers/plugins/utils/scripts/check_replied.py`
 
+**Go caches in agent-swarm pods** (before `make check` / `make test` if code may change):
+
+```bash
+export GOMODCACHE=/tmp/gomodcache GOCACHE=/tmp/gocache GOPATH=/tmp/gopath
+mkdir -p "$GOMODCACHE" "$GOCACHE" "$GOPATH"
+```
+
+If `permission denied` on `/home/node/go/pkg/mod`, set all three vars — `GOCACHE`
+alone is not enough.
+
 ## Instructions
 
 1. **PR number**
@@ -64,24 +74,45 @@ amending commits. **Reply footer:**
    ```
    - Resolve conflicts; re-run verification
 
-7. **Verify**
+7. **Verify** — only when you changed code (skip for reply-only questions with no edits):
    ```bash
-   make check
+   export GOMODCACHE=/tmp/gomodcache GOCACHE=/tmp/gocache GOPATH=/tmp/gopath
+   mkdir -p "$GOMODCACHE" "$GOCACHE" "$GOPATH"
+   make check   # allow several minutes; remote lint + go list
    make test
    ```
    - Do not push if failures are caused by your changes
+   - Do not skip verification because of cache errors — fix env vars first
+   - Do not claim tests passed if verification did not complete
 
-8. **Push once**
+8. **Push once** — skip if no code changes
    ```bash
    git push --force-with-lease
    ```
 
-9. **Post replies** after push (use reply footer above).
+9. **Post replies** — after push when code changed; for reply-only, post without push.
+
+   **Inline review comment** (reply in thread):
+   ```bash
+   gh api repos/stolostron/managedcluster-import-controller/pulls/<PR>/comments \
+     -X POST -f body="$(cat <<'EOF'
+   <your reply>
+
+   ---
+   *AI-assisted response via agent-swarm*
+   EOF
+   )" -F in_reply_to=<comment_id>
+   ```
+
+   Do **not** use `gh pr review --comment` for inline threads — it posts a top-level
+   review, not a thread reply.
 
 10. **Summary** — PR link, comments addressed vs skipped, verification status
 
 ## Do not
 
 - Push without `make check` and `make test` when code changed
+- Skip verification and post replies when `make` failed or timed out (except pure
+  explanation replies with zero code changes)
 - Run only `go test` on changed packages instead of `make test`
 - Reply twice to the same comment thread

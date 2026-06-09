@@ -42,6 +42,29 @@ so a single injected prompt is self-contained — refresh the prompt source afte
 - PAT or GitHub App with `contents`, `pull_requests`, `issues` on MCIC
 - `gh` uses `GITHUB_TOKEN` or configured auth in the agent environment
 
+### Go build cache (required for `make check` / `make test`)
+
+Agent pods often run as a non-root user (`node`) with a read-only or unwritable
+default `GOMODCACHE` under `/home/node/go`. Set workspace **Environment Variables**
+(Workspaces → **Environment Variables**) so `go` can write caches:
+
+| Variable | Value |
+|----------|-------|
+| `GOMODCACHE` | `/tmp/gomodcache` |
+| `GOCACHE` | `/tmp/gocache` |
+| `GOPATH` | `/tmp/gopath` |
+
+Verify in a session pod before relying on agents:
+
+```bash
+mkdir -p /tmp/gomodcache /tmp/gocache /tmp/gopath
+cd /workspace/managedcluster-import-controller
+make check
+```
+
+`make check` can take several minutes (remote lint script + `go list`). Allow
+timeouts ≥ 5 minutes for verification steps.
+
 ### Jira MCP
 
 Catalog entry: **atlassian-jira** / `jira-mcp-server`
@@ -139,3 +162,5 @@ After first session run:
 | `make test` fails in pod | envtest/kubebuilder assets; network for sdk-go scripts |
 | PR not created | `gh` token scopes; branch push permissions |
 | Duplicate review replies | Clone `mcic-ai-helpers`; `check_replied.py` path |
+| `permission denied` on `go/pkg/mod/cache` | Set `GOMODCACHE`, `GOCACHE`, `GOPATH` under `/tmp` (see above) |
+| `make check` hangs / times out | Normal on first run; increase tool timeout; check network for lint curl |

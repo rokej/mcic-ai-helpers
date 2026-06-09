@@ -15,6 +15,8 @@ or when the user names a key explicitly.
 Host `https://redhat.atlassian.net`, project ACM. No Jira CLI or curl.
 
 **Verification before commit/push:** `make check` then `make test` (not `go test ./pkg/...`).
+In agent-swarm pods set `GOMODCACHE=/tmp/gomodcache GOCACHE=/tmp/gocache GOPATH=/tmp/gopath`
+before `make` (see `docs/agent-swarm-setup.md`).
 
 **Branch:** `fix-ACM-<digits>`. Commits: Conventional Commits + `Signed-off-by`.
 
