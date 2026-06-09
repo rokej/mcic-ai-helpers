@@ -7,25 +7,18 @@ from agent commands.
 ## Install
 
 ```bash
-pip install git+https://github.com/rokej/jira-mcp-server.git
+./scripts/setup-dev.sh
 ```
 
-Or from a local clone:
+Or manually:
 
 ```bash
-git clone https://github.com/rokej/jira-mcp-server.git
-cd jira-mcp-server
-pip install -e .
+python3 -m pip install git+https://github.com/rokej/jira-mcp-server.git
 ```
 
-Verify:
-
-```bash
-python -c "import jira_mcp_server; print('ok')"
-```
-
-Use the same Python interpreter in `.mcp.json` if `python` is not on your PATH
-(e.g. `/path/to/venv/bin/python`).
+On macOS, use `python3` — a `python` binary is often not on PATH. The manual
+runner scripts resolve the interpreter automatically and write the full path
+into the workspace `.mcp.json`.
 
 Optional: set `cwd` in `.mcp.json` to your jira-mcp-server clone if you use a
 `.env` file there instead of exported variables.

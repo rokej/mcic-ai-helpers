@@ -4,6 +4,9 @@ set -euo pipefail
 
 err() { echo "ERROR: $*" >&2; }
 
+# shellcheck source=resolve-python.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/resolve-python.sh"
+
 check_command() {
   local cmd="$1"
   local hint="$2"
@@ -14,9 +17,12 @@ check_command() {
 }
 
 check_jira_mcp_server() {
-  if ! python -c "import jira_mcp_server" >/dev/null 2>&1; then
-    err "jira-mcp-server is not installed."
-    err "Install: pip install git+https://github.com/rokej/jira-mcp-server.git"
+  resolve_python || return 1
+
+  if ! "${MCIC_PYTHON}" -c "import jira_mcp_server" >/dev/null 2>&1; then
+    err "jira-mcp-server is not installed for ${MCIC_PYTHON}."
+    err "Install: ${MCIC_PYTHON} -m pip install git+https://github.com/rokej/jira-mcp-server.git"
+    err "Or run: ./scripts/setup-dev.sh"
     return 1
   fi
 }
@@ -45,7 +51,6 @@ check_env() {
   check_command git "Install git." || missing=1
   check_command gh "Run: gh auth login" || missing=1
   check_command claude "Install Claude Code: https://docs.anthropic.com/en/docs/claude-code" || missing=1
-  check_command python "Install Python 3.10+" || missing=1
 
   if ! gh auth status >/dev/null 2>&1; then
     err "gh is not authenticated. Run: gh auth login"
@@ -63,7 +68,7 @@ check_env() {
     exit 1
   fi
 
-  echo "Prerequisites OK (claude, gh, git, python, jira-mcp-server)"
+  echo "Prerequisites OK (claude, gh, git, ${MCIC_PYTHON}, jira-mcp-server)"
 }
 
 check_env_with_jira() {
