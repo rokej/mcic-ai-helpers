@@ -36,6 +36,8 @@ After processing, add label `agent-processed` via `update_issue`.
 
 ## JQL: agent queue
 
+See **`jira-agent-queue`** skill for listing issues with `search_issues`.
+
 ```
 project = ACM
 AND resolution = Unresolved
@@ -44,8 +46,6 @@ AND labels = issue-for-agent
 AND labels != agent-processed
 ORDER BY created ASC
 ```
-
-Use MCP tool `search_issues` with this JQL.
 
 ## Description template
 

@@ -96,10 +96,11 @@ Uses `gh` only (no Jira).
 ### List agent queue
 
 ```bash
-./scripts/list-jira-queue.sh
+./scripts/list-jira-queue.sh              # Claude lists queue via search_issues
+./scripts/list-jira-queue.sh --jql-only   # print JQL only
 ```
 
-Prints JQL. Run the search via Claude using jira-mcp-server `search_issues`.
+Uses the **`jira-agent-queue`** skill and jira-mcp-server `search_issues`.
 
 ## Interactive usage (without scripts)
 

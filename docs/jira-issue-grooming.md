@@ -30,7 +30,7 @@ AND labels != agent-processed
 ORDER BY created ASC
 ```
 
-Search with jira-mcp-server MCP tool `search_issues`.
+Search with jira-mcp-server MCP tool `search_issues` (see **`jira-agent-queue`** skill).
 
 ## Description template
 

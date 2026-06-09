@@ -6,7 +6,8 @@ Skills auto-load when the corresponding plugin is installed.
 
 | Skill | When it applies |
 |-------|-----------------|
-| `server-foundation` | ACM Jira conventions, JQL, issue grooming |
+| `server-foundation` | ACM Jira conventions, issue grooming |
+| `jira-agent-queue` | List agent queue via `search_issues`, pick next issue |
 
 ## mcic@mcic-ai-helpers
 
