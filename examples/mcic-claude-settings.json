@@ -1,0 +1,14 @@
+{
+  "extraKnownMarketplaces": {
+    "mcic-ai-helpers": {
+      "source": {
+        "source": "github",
+        "repo": "rokej/mcic-ai-helpers"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "jira@mcic-ai-helpers": true,
+    "utils@mcic-ai-helpers": true
+  }
+}

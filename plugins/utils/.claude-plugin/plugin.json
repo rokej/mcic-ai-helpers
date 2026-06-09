@@ -1,0 +1,8 @@
+{
+  "name": "utils",
+  "description": "PR review comment utilities for managedcluster-import-controller",
+  "version": "0.1.0",
+  "author": {
+    "name": "rokej"
+  }
+}

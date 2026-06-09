@@ -1,0 +1,33 @@
+{
+  "name": "mcic-ai-helpers",
+  "owner": {
+    "name": "rokej"
+  },
+  "plugins": [
+    {
+      "name": "jira",
+      "source": "./plugins/jira",
+      "description": "Jira issue solving for managedcluster-import-controller (MCP-only)",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "jira",
+        "mcic",
+        "managedcluster-import-controller",
+        "acm"
+      ]
+    },
+    {
+      "name": "utils",
+      "source": "./plugins/utils",
+      "description": "PR review utilities for MCIC development",
+      "version": "0.1.0",
+      "category": "tooling",
+      "keywords": [
+        "pull-request",
+        "code-review",
+        "mcic"
+      ]
+    }
+  ]
+}

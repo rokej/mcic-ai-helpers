@@ -1,0 +1,10 @@
+.DS_Store
+*.swp
+*.swo
+.work/
+_output/
+tmp/
+*.log
+
+# Local clone workspaces
+.workspace/
