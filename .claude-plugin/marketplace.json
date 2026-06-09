@@ -7,8 +7,8 @@
     {
       "name": "jira",
       "source": "./plugins/jira",
-      "description": "Jira issue solving for managedcluster-import-controller (MCP-only)",
-      "version": "0.1.0",
+      "description": "Jira issue solving for managedcluster-import-controller (jira-mcp-server)",
+      "version": "0.1.1",
       "category": "productivity",
       "keywords": [
         "jira",
@@ -18,10 +18,23 @@
       ]
     },
     {
+      "name": "mcic",
+      "source": "./plugins/mcic",
+      "description": "MCIC codebase skills: build, test, controllers, E2E, commits",
+      "version": "0.1.0",
+      "category": "development",
+      "keywords": [
+        "managedcluster-import-controller",
+        "ocm",
+        "acm",
+        "controllers"
+      ]
+    },
+    {
       "name": "utils",
       "source": "./plugins/utils",
       "description": "PR review utilities for MCIC development",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "category": "tooling",
       "keywords": [
         "pull-request",

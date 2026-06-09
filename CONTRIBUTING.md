@@ -1,5 +1,18 @@
 # Contributing
 
+## Adding skills
+
+Add `plugins/<plugin>/skills/<skill-name>/SKILL.md` with YAML frontmatter:
+
+```yaml
+---
+name: skill-name
+description: When to auto-invoke this skill (be specific).
+---
+```
+
+Register new plugins in `.claude-plugin/marketplace.json` and update [SKILLS.md](SKILLS.md).
+
 ## Adding commands
 
 1. Add `plugins/<plugin>/commands/<name>.md` with frontmatter (`description`, `argument-hint`)

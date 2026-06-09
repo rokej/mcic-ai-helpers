@@ -54,9 +54,12 @@ When implementing fixes, follow MCIC conventions:
 
 ```
 plugins/
-  jira/     — /jira:solve command + server-foundation Jira skill + .mcp.json
-  utils/    — /utils:address-reviews command + check_replied.py
+  jira/     — /jira:solve + server-foundation skill + .mcp.json
+  mcic/     — build, controllers, e2e, commit skills
+  utils/    — /utils:address-reviews + mcic-pr-review skill
 ```
+
+See [SKILLS.md](SKILLS.md) for the full index.
 
 Commands are markdown specs consumed by Claude Code interactively or via
 `claude -p` in manual runner scripts.

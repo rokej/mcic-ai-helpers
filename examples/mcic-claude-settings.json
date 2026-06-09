@@ -9,6 +9,7 @@
   },
   "enabledPlugins": {
     "jira@mcic-ai-helpers": true,
+    "mcic@mcic-ai-helpers": true,
     "utils@mcic-ai-helpers": true
   }
 }

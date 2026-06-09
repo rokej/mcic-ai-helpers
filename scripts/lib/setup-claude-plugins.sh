@@ -26,6 +26,7 @@ setup_claude_plugins() {
   },
   "enabledPlugins": {
     "jira@${marketplace_name}": true,
+    "mcic@${marketplace_name}": true,
     "utils@${marketplace_name}": true
   }
 }
@@ -36,5 +37,5 @@ EOF
 
   echo "Wrote ${settings_file}"
   echo "Wrote ${mcp_file} (jira-mcp-server)"
-  echo "Plugins: jira@${marketplace_name}, utils@${marketplace_name}"
+  echo "Plugins: jira@${marketplace_name}, mcic@${marketplace_name}, utils@${marketplace_name}"
 }

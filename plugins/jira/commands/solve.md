@@ -60,6 +60,16 @@ Use MCP tools `add_comment` and `update_issue` for Jira follow-up — not CLI/cu
 - **Default branch:** `main`
 - **Module:** `github.com/stolostron/managedcluster-import-controller`
 
+### Applicable skills (mcic@mcic-ai-helpers)
+
+| Skill | Use when |
+|-------|----------|
+| `mcic-controllers` | Locating code, understanding import flows |
+| `mcic-build-test` | Verification (`make check`, `make test`) |
+| `mcic-e2e-flakes` | Touching `test/e2e` or klusterlet timing |
+| `git-commit-format` | Creating commits with DCO sign-off |
+| `server-foundation` | Jira/ACM conventions |
+
 ### Verification commands (required)
 
 Run these before committing:

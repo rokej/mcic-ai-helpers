@@ -26,7 +26,14 @@ categorizes by priority, implements valid changes, and posts replies.
 
 Default repo: `stolostron/managedcluster-import-controller`.
 
----
+### Applicable skills
+
+| Skill | Use when |
+|-------|----------|
+| `mcic-build-test` | Pre-push verification |
+| `mcic-pr-review` | Reply format, amend strategy |
+| `git-commit-format` | Commit messages + Signed-off-by |
+| `mcic-controllers` | Understanding change context |
 
 ## Implementation
 

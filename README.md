@@ -38,6 +38,7 @@ export JIRA_ACCESS_TOKEN="your-token"
 ```bash
 /plugin marketplace add rokej/mcic-ai-helpers
 /plugin install jira@mcic-ai-helpers
+/plugin install mcic@mcic-ai-helpers
 /plugin install utils@mcic-ai-helpers
 ```
 
@@ -57,10 +58,13 @@ For local development:
 
 ## Plugins
 
-| Plugin | Commands | Purpose |
-|--------|----------|---------|
-| `jira` | `/jira:solve` | Fetch issue via jira-mcp-server, implement fix, open draft PR |
-| `utils` | `/utils:address-reviews` | Triage and address PR review comments |
+| Plugin | Commands / skills | Purpose |
+|--------|-------------------|---------|
+| `jira` | `/jira:solve`, `server-foundation` | Jira + issue solving |
+| `mcic` | `mcic-build-test`, `mcic-controllers`, `mcic-e2e-flakes`, `git-commit-format` | MCIC codebase conventions |
+| `utils` | `/utils:address-reviews`, `mcic-pr-review` | PR review handling |
+
+See [SKILLS.md](SKILLS.md) for the full skill index.
 
 ## Documentation
 

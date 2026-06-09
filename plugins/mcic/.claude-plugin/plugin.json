@@ -1,0 +1,8 @@
+{
+  "name": "mcic",
+  "description": "managedcluster-import-controller codebase conventions, build, tests, and architecture",
+  "version": "0.1.0",
+  "author": {
+    "name": "rokej"
+  }
+}

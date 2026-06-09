@@ -49,6 +49,7 @@ Full details: [jira-mcp-server-setup.md](jira-mcp-server-setup.md)
 ```bash
 /plugin marketplace add rokej/mcic-ai-helpers
 /plugin install jira@mcic-ai-helpers
+/plugin install mcic@mcic-ai-helpers
 /plugin install utils@mcic-ai-helpers
 ```
 
@@ -57,6 +58,7 @@ Full details: [jira-mcp-server-setup.md](jira-mcp-server-setup.md)
 ```bash
 /plugin marketplace add /path/to/mcic-ai-helpers
 /plugin install jira@mcic-ai-helpers
+/plugin install mcic@mcic-ai-helpers
 /plugin install utils@mcic-ai-helpers
 ```
 
