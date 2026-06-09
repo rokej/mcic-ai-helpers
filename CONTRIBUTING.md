@@ -8,20 +8,26 @@
 
 ## Jira commands
 
-All Jira-related commands **must** use Atlassian MCP tools. Do not add:
+All Jira-related commands **must** use **[jira-mcp-server](https://github.com/rokej/jira-mcp-server)**
+MCP tools (`get_issue`, `search_issues`, `add_comment`, `update_issue`, etc.).
+
+Do not add:
 
 - `jira` CLI references
-- `curl` REST examples
-- `JIRA_API_TOKEN` requirements
+- Direct `curl` REST examples in command specs
+
+Credentials belong in `.mcp.json` / environment variables consumed by
+jira-mcp-server — never hardcode tokens in command markdown.
 
 ## Testing locally
 
 ```bash
-# Install plugins from this directory
-/plugin marketplace add /path/to/mcic-ai-helpers
-/plugin install jira@mcic-ai-helpers
+export JIRA_SERVER_URL="https://redhat.atlassian.net"
+export JIRA_EMAIL="you@redhat.com"
+export JIRA_ACCESS_TOKEN="your-token"
 
-# Run manual script
+pip install git+https://github.com/rokej/jira-mcp-server.git
+
 ./scripts/run-jira-solve.sh ACM-XXXXX
 ```
 
@@ -29,6 +35,6 @@ All Jira-related commands **must** use Atlassian MCP tools. Do not add:
 
 - `scripts/run-jira-solve.sh` — end-to-end solve flow
 - `scripts/run-address-reviews.sh` — PR review flow
-- `scripts/list-jira-queue.sh` — prints JQL (MCP execution only)
+- `scripts/list-jira-queue.sh` — prints JQL for `search_issues`
 
-Make scripts executable after clone: `chmod +x scripts/*.sh scripts/lib/*.sh`
+Make scripts executable: `make chmod-scripts`

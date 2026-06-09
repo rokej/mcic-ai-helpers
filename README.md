@@ -3,28 +3,35 @@
 Claude Code plugins and manual runner scripts for AI-assisted development on
 [stolostron/managedcluster-import-controller](https://github.com/stolostron/managedcluster-import-controller).
 
-Phase 1 is **manual only** — run workflows from your laptop with Claude Code or
-Cursor. No Prow jobs yet.
+Phase 1 is **manual only** — run workflows from your laptop with Claude Code.
+No Prow jobs yet.
 
 ## Design principles
 
-- **Jira via MCP only** — use the Atlassian Jira MCP server for all Jira reads
-  and writes. Do not use the Jira CLI, `curl`, or `JIRA_API_TOKEN`.
+- **Jira via [jira-mcp-server](https://github.com/rokej/jira-mcp-server)** — all
+  Jira operations use MCP tools from `github.com/rokej/jira-mcp-server`. Do not
+  use the Jira CLI or direct REST/curl from agent commands.
 - **GitHub via `gh`** — PRs, review comments, and branch operations use the
   GitHub CLI.
 - **Separate from MCIC** — agent building blocks live here; the target repo gets
-  a small `.claude/settings.json` when ready.
+  a small `.claude/settings.json` and `.mcp.json` when ready.
 
 ## Quick start
 
 ### Prerequisites
 
-1. [Claude Code](https://docs.anthropic.com/en/docs/claude-code) or Cursor with
-   the Atlassian plugin
-2. **Atlassian MCP authenticated** (browser OAuth) — see
-   [docs/manual-runbook.md](docs/manual-runbook.md)
-3. `gh` authenticated (`gh auth login`)
-4. `git` and `make` (for MCIC verification)
+1. [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
+2. [jira-mcp-server](https://github.com/rokej/jira-mcp-server) installed
+3. Jira credentials exported — see [docs/jira-mcp-server-setup.md](docs/jira-mcp-server-setup.md)
+4. `gh` authenticated (`gh auth login`)
+
+```bash
+pip install git+https://github.com/rokej/jira-mcp-server.git
+
+export JIRA_SERVER_URL="https://redhat.atlassian.net"
+export JIRA_EMAIL="you@redhat.com"
+export JIRA_ACCESS_TOKEN="your-token"
+```
 
 ### Install plugins (Claude Code)
 
@@ -34,7 +41,7 @@ Cursor. No Prow jobs yet.
 /plugin install utils@mcic-ai-helpers
 ```
 
-For local development before publishing:
+For local development:
 
 ```bash
 /plugin marketplace add /path/to/mcic-ai-helpers
@@ -43,13 +50,8 @@ For local development before publishing:
 ### Run manually
 
 ```bash
-# Solve a Jira issue → branch + draft PR on MCIC
 ./scripts/run-jira-solve.sh ACM-12345
-
-# Address review comments on a PR (--preview recommended)
 ./scripts/run-address-reviews.sh 42 --preview
-
-# List issues ready for the agent (prints JQL; run via Claude MCP)
 ./scripts/list-jira-queue.sh
 ```
 
@@ -57,20 +59,21 @@ For local development before publishing:
 
 | Plugin | Commands | Purpose |
 |--------|----------|---------|
-| `jira` | `/jira:solve` | Fetch issue via MCP, implement fix, open draft PR |
+| `jira` | `/jira:solve` | Fetch issue via jira-mcp-server, implement fix, open draft PR |
 | `utils` | `/utils:address-reviews` | Triage and address PR review comments |
 
 ## Documentation
 
-- [Manual runbook](docs/manual-runbook.md) — setup, env checks, examples
-- [Jira issue grooming](docs/jira-issue-grooming.md) — labels and JQL criteria
-- [MCIC `.claude/settings.json` example](examples/mcic-claude-settings.json)
+- [jira-mcp-server setup](docs/jira-mcp-server-setup.md)
+- [Manual runbook](docs/manual-runbook.md)
+- [Jira issue grooming](docs/jira-issue-grooming.md)
+- [MCP config example](examples/mcp.json.example)
 
 ## Target repository
 
 - **Upstream:** `stolostron/managedcluster-import-controller`
 - **Verification:** `make check`, `make test`
-- **Jira project:** ACM (Red Hat Advanced Cluster Management)
+- **Jira project:** ACM
 
 ## Roadmap
 

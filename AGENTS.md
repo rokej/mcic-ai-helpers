@@ -9,26 +9,33 @@ the Server Foundation team's managedcluster-import-controller (MCIC) automation.
 
 ## Hard rules
 
-### Jira: MCP only
+### Jira: jira-mcp-server only
 
-All Jira operations MUST use the **Atlassian Jira MCP server**. Never use:
+All Jira operations MUST use **[jira-mcp-server](https://github.com/rokej/jira-mcp-server)**
+MCP tools (server name: `jira-mcp-server`). Never use:
 
 - `jira` CLI
-- `curl` / REST API calls to `redhat.atlassian.net`
-- `JIRA_USERNAME` / `JIRA_API_TOKEN` environment variables
+- Direct `curl` / REST API calls to Jira from agent commands
 
-Use these MCP tools instead:
+Primary MCP tools:
 
 | Operation | MCP tool |
 |-----------|----------|
-| Fetch issue | `getJiraIssue` |
-| Search queue | `searchJiraIssuesUsingJql` |
-| Update fields/labels | `editJiraIssue` |
-| Transition status | `getTransitionsForJiraIssue`, `transitionJiraIssue` |
-| Add comment | `addCommentToJiraIssue` |
-| Resolve cloud ID | `getAccessibleAtlassianResources` |
+| Fetch issue | `get_issue` |
+| Search queue | `search_issues` |
+| Post comment | `add_comment` |
+| Update labels/fields | `update_issue` |
+| Transition status | `transition_issue` |
 
-`cloudId` may be `redhat.atlassian.net`.
+Credentials are configured in `.mcp.json` and loaded by jira-mcp-server:
+
+- `JIRA_SERVER_URL` — e.g. `https://redhat.atlassian.net`
+- `JIRA_EMAIL` — your Atlassian account email
+- `JIRA_ACCESS_TOKEN` — API token from id.atlassian.com
+
+See [docs/jira-mcp-server-setup.md](docs/jira-mcp-server-setup.md).
+
+Install: `pip install git+https://github.com/rokej/jira-mcp-server.git`
 
 ### GitHub: gh CLI
 
@@ -47,7 +54,7 @@ When implementing fixes, follow MCIC conventions:
 
 ```
 plugins/
-  jira/     — /jira:solve command + server-foundation Jira skill
+  jira/     — /jira:solve command + server-foundation Jira skill + .mcp.json
   utils/    — /utils:address-reviews command + check_replied.py
 ```
 
@@ -59,5 +66,5 @@ Commands are markdown specs consumed by Claude Code interactively or via
 | Here (mcic-ai-helpers) | MCIC repo (later) |
 |------------------------|-------------------|
 | Cross-cutting slash commands | Repo-specific skills (build, e2e flakes) |
-| Jira team skill | `.claude/settings.json` marketplace wiring |
+| Jira team skill + `.mcp.json` template | `.claude/settings.json` marketplace wiring |
 | Manual run scripts | `contrib/ai/local-runbook.md` pointer |

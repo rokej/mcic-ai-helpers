@@ -4,9 +4,9 @@
       "command": "python",
       "args": ["-m", "jira_mcp_server.main"],
       "env": {
-        "JIRA_SERVER_URL": "${JIRA_SERVER_URL}",
-        "JIRA_ACCESS_TOKEN": "${JIRA_ACCESS_TOKEN}",
-        "JIRA_EMAIL": "${JIRA_EMAIL}"
+        "JIRA_SERVER_URL": "https://redhat.atlassian.net",
+        "JIRA_ACCESS_TOKEN": "your-api-token",
+        "JIRA_EMAIL": "you@redhat.com"
       }
     }
   }

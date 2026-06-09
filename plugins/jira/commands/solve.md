@@ -25,31 +25,32 @@ Analyze an ACM Jira issue and implement a fix in
 
 ---
 
-## Jira integration (MCP only)
+## Jira integration (jira-mcp-server only)
 
-> **HARD RULE:** Use the **Atlassian Jira MCP server** for ALL Jira operations.
-> Do NOT use the Jira CLI, `curl`, REST API calls, `JIRA_USERNAME`, or
-> `JIRA_API_TOKEN`.
+> **HARD RULE:** Use the **jira-mcp-server** MCP tools for ALL Jira reads.
+> Do NOT use the Jira CLI or direct `curl`/REST calls from this command.
+
+Authentication is handled by jira-mcp-server via `JIRA_SERVER_URL`, `JIRA_EMAIL`,
+and `JIRA_ACCESS_TOKEN` in `.mcp.json` — not by the agent.
 
 ### Required MCP tools
 
 | Step | MCP tool | Purpose |
 |------|----------|---------|
-| Resolve site | `getAccessibleAtlassianResources` | Get `cloudId` (or use `redhat.atlassian.net`) |
-| Fetch issue | `getJiraIssue` | Summary, description, labels, components |
-| Search queue | `searchJiraIssuesUsingJql` | Optional: find issues with `issue-for-agent` label |
-| Post PR link | `addCommentToJiraIssue` | Link draft PR after creation |
-| Mark processed | `editJiraIssue` | Add `agent-processed` label when done |
-
-Use `responseContentFormat: markdown` when fetching descriptions.
+| Fetch issue | `get_issue` | Summary, description, status, labels |
+| Search queue | `search_issues` | Find issues matching agent JQL |
+| Post PR link | `add_comment` | Link draft PR after creation |
+| Mark processed | `update_issue` | Add `agent-processed` label |
 
 ### Forbidden patterns
 
 ```bash
-# NEVER do any of these:
+# NEVER do any of these from this command:
 jira issue view ACM-12345
-curl -u "$JIRA_USERNAME:$JIRA_API_TOKEN" https://redhat.atlassian.net/rest/api/3/issue/ACM-12345
+curl -H "Authorization: Bearer $JIRA_ACCESS_TOKEN" https://redhat.atlassian.net/rest/api/3/issue/ACM-12345
 ```
+
+Use MCP tools `add_comment` and `update_issue` for Jira follow-up — not CLI/curl.
 
 ---
 
@@ -79,7 +80,8 @@ integration coverage.
 
 ### 1. Issue analysis
 
-Use `getJiraIssue` with `cloudId: redhat.atlassian.net` and the issue key from `$1`.
+Use MCP tool `get_issue` with `issue_key` set to the key from `$1` (e.g.
+`ACM-12345`).
 
 Extract from the description:
 
@@ -138,12 +140,12 @@ ManagedCluster lifecycle tests (leader-election race patterns).
 gh pr create --draft --title "ACM-12345: ..." --body "..."
 ```
 
-### 6. Jira follow-up (optional in phase 1)
+### 6. Jira follow-up (optional)
 
-After PR creation, use MCP to:
+After PR creation, use jira-mcp-server MCP tools:
 
-1. `addCommentToJiraIssue` — post PR URL
-2. `editJiraIssue` — add label `agent-processed` (if requested by user)
+1. `add_comment` — post the PR URL on the issue
+2. `update_issue` — add label `agent-processed` (if requested)
 
 ---
 

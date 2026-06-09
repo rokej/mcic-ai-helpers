@@ -14,7 +14,8 @@ How to prepare ACM issues for the `jira:solve` agent workflow.
 
 ## After processing
 
-Add label `agent-processed` (via Atlassian MCP `editJiraIssue`, not CLI).
+Add label `agent-processed` via jira-mcp-server MCP tool `update_issue`, or
+manually in Jira.
 
 To reprocess: remove `agent-processed` and ensure `issue-for-agent` is present.
 
@@ -29,7 +30,7 @@ AND labels != agent-processed
 ORDER BY created ASC
 ```
 
-Search with MCP tool `searchJiraIssuesUsingJql` and `cloudId: redhat.atlassian.net`.
+Search with jira-mcp-server MCP tool `search_issues`.
 
 ## Description template
 

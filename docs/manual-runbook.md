@@ -7,37 +7,44 @@ Phase 1 runs AI-assisted workflows from your laptop. No Prow, no periodic jobs.
 | Tool | Purpose | Install |
 |------|---------|---------|
 | Claude Code | Runs slash commands | https://docs.anthropic.com/en/docs/claude-code |
-| Atlassian MCP | **All Jira access** | Cursor Atlassian plugin or jira plugin `.mcp.json` |
+| [jira-mcp-server](https://github.com/rokej/jira-mcp-server) | **All Jira access** | [setup guide](jira-mcp-server-setup.md) |
 | `gh` | GitHub PRs and reviews | `gh auth login` |
 | `git` | Clone MCIC | system package |
 | `make` + Go | MCIC verification | MCIC dev environment |
 
-## Jira access (MCP only)
+## Jira access (jira-mcp-server)
 
-> **Do not** install the Jira CLI or set `JIRA_API_TOKEN`.
+> **Do not** use the Jira CLI or direct `curl` to Jira from agent commands.
 
-This project uses the **Atlassian Jira MCP server** for every Jira operation:
+This project uses **[github.com/rokej/jira-mcp-server](https://github.com/rokej/jira-mcp-server)**
+(MCP server name: `jira-mcp-server`).
 
-- Fetch issues (`getJiraIssue`)
-- Search queue (`searchJiraIssuesUsingJql`)
-- Update labels (`editJiraIssue`)
-- Post comments (`addCommentToJiraIssue`)
+| Tool | Purpose |
+|------|---------|
+| `get_issue` | Fetch issue details |
+| `search_issues` | Run JQL |
+| `add_comment` | Post PR link |
+| `update_issue` | Add labels |
 
-### Cursor
+### Setup
 
-1. Enable the Atlassian plugin (provides Jira MCP)
-2. Complete OAuth when prompted
-3. Verify: ask Claude to fetch an ACM issue via MCP
+1. Install: `pip install git+https://github.com/rokej/jira-mcp-server.git`
+2. Create API token: https://id.atlassian.com/manage-profile/security/api-tokens
+3. Export credentials:
 
-### Claude Code
+```bash
+export JIRA_SERVER_URL="https://redhat.atlassian.net"
+export JIRA_EMAIL="you@redhat.com"
+export JIRA_ACCESS_TOKEN="your-token"
+```
 
-1. Install plugins from this repo (see below)
-2. The `jira` plugin ships `.mcp.json` pointing at Atlassian MCP
-3. Complete MCP OAuth on first Jira tool use
+4. Verify: `claude mcp list` (should show `jira-mcp-server`)
+
+Full details: [jira-mcp-server-setup.md](jira-mcp-server-setup.md)
 
 ## Install plugins
 
-### From GitHub (after publishing)
+### From GitHub
 
 ```bash
 /plugin marketplace add rokej/mcic-ai-helpers
@@ -55,22 +62,25 @@ This project uses the **Atlassian Jira MCP server** for every Jira operation:
 
 ## Manual scripts
 
-All scripts live in `scripts/` and clone MCIC to `.workspace/mcic`.
+All scripts clone MCIC to `.workspace/mcic` and write `.mcp.json` at the workspace root.
 
 ### Solve a Jira issue
 
 ```bash
+export JIRA_SERVER_URL JIRA_EMAIL JIRA_ACCESS_TOKEN   # required
+
 ./scripts/run-jira-solve.sh ACM-12345
 ./scripts/run-jira-solve.sh ACM-12345 origin --ci   # non-interactive
 ```
 
 What it does:
 
-1. Clones/updates `stolostron/managedcluster-import-controller`
-2. Writes `.claude/settings.json` with local marketplace
-3. Runs `claude -p "/jira:solve ACM-12345 origin"`
-4. Agent uses **MCP** to fetch the issue, implements fix, runs `make check` + `make test`
-5. Creates a draft PR via `gh`
+1. Validates Jira env vars and `gh` auth
+2. Clones/updates `stolostron/managedcluster-import-controller`
+3. Writes `.claude/settings.json` and `.mcp.json`
+4. Runs `claude -p "/jira:solve ACM-12345 origin"`
+5. Agent uses jira-mcp-server `get_issue`, implements fix, runs `make check` + `make test`
+6. Creates a draft PR via `gh`
 
 ### Address review comments
 
@@ -79,7 +89,7 @@ What it does:
 ./scripts/run-address-reviews.sh              # uses current branch
 ```
 
-Uses `gh` only (no Jira). `--preview` confirms each action before executing.
+Uses `gh` only (no Jira).
 
 ### List agent queue
 
@@ -87,11 +97,11 @@ Uses `gh` only (no Jira). `--preview` confirms each action before executing.
 ./scripts/list-jira-queue.sh
 ```
 
-Prints JQL. Execute the search via Claude + Atlassian MCP (not CLI).
+Prints JQL. Run the search via Claude using jira-mcp-server `search_issues`.
 
 ## Interactive usage (without scripts)
 
-In a MCIC clone with plugins installed:
+In a MCIC clone with plugins and `.mcp.json` configured:
 
 ```
 /jira:solve ACM-12345 origin
@@ -100,20 +110,20 @@ In a MCIC clone with plugins installed:
 
 ## Environment variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MAX_TURNS` | `100` | Claude agentic turn limit |
-| `MCIC_BRANCH` | `main` | Branch to clone |
-| `MCIC_REPO` | stolostron/managedcluster-import-controller | Clone URL |
-
-**Not used:** `JIRA_USERNAME`, `JIRA_API_TOKEN`
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `JIRA_SERVER_URL` | Yes (jira flows) | `https://redhat.atlassian.net` |
+| `JIRA_EMAIL` | Yes (jira flows) | Atlassian account email |
+| `JIRA_ACCESS_TOKEN` | Yes (jira flows) | API token for jira-mcp-server |
+| `MAX_TURNS` | No | Claude turn limit (default `100`) |
+| `MCIC_BRANCH` | No | Branch to clone (default `main`) |
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---------|-----|
-| MCP auth fails | Re-authenticate Atlassian plugin; check VPN if required |
-| `claude: command not found` | Install Claude Code CLI |
+| `jira_mcp_server` module not found | `pip install git+https://github.com/rokej/jira-mcp-server.git` |
+| Jira auth failure | Regenerate token; check email matches token owner |
+| `claude mcp list` missing jira-mcp-server | Ensure `.mcp.json` in workspace root; check env vars |
 | `gh auth` errors | `gh auth login` |
-| `make test` fails in agent run | Fix in workspace; re-run or continue interactively |
-| Plugin not found | Check marketplace path in `.claude/settings.json` |
+| `make test` fails | Fix in workspace; continue interactively |

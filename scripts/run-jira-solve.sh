@@ -4,7 +4,7 @@
 # Usage:
 #   ./scripts/run-jira-solve.sh ACM-12345 [remote] [--ci]
 #
-# Jira access: Atlassian MCP server only (no Jira CLI, no API tokens).
+# Jira access: github.com/rokej/jira-mcp-server MCP only (no Jira CLI, no direct curl).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -30,7 +30,7 @@ fi
 
 # shellcheck source=lib/env-check.sh
 source "${SCRIPT_DIR}/lib/env-check.sh"
-check_env
+check_env_with_jira
 
 WORKSPACE_DIR="${ROOT_DIR}/.workspace/mcic"
 export WORKSPACE_DIR
@@ -49,12 +49,12 @@ fi
 
 echo ""
 echo "=== Running jira:solve ==="
-echo "Issue:    ${ISSUE_KEY}"
-echo "Remote:   ${REMOTE}"
+echo "Issue:     ${ISSUE_KEY}"
+echo "Remote:    ${REMOTE}"
 echo "Workspace: ${WORKSPACE_DIR}"
-echo "Jira:     Atlassian MCP (not CLI)"
+echo "Jira:      github.com/rokej/jira-mcp-server (get_issue, search_issues)"
 echo ""
-echo "Command:  claude -p \"${PROMPT}\""
+echo "Command:   claude -p \"${PROMPT}\""
 echo ""
 
 claude -p "${PROMPT}" \

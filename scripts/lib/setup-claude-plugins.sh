@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Wire mcic-ai-helpers marketplace into a target repo's .claude/settings.json.
+# Wire mcic-ai-helpers marketplace and jira-mcp-server MCP config into a workspace.
 
 setup_claude_plugins() {
   local target_dir="$1"
   local helpers_root="$2"
   local settings_dir="${target_dir}/.claude"
   local settings_file="${settings_dir}/settings.json"
+  local mcp_file="${target_dir}/.mcp.json"
   local marketplace_name="mcic-ai-helpers"
   local marketplace_path
 
@@ -30,10 +31,10 @@ setup_claude_plugins() {
 }
 EOF
 
-  if [[ -f "${helpers_root}/plugins/jira/.mcp.json" ]]; then
-    cp "${helpers_root}/plugins/jira/.mcp.json" "${settings_dir}/.mcp.json"
-  fi
+  # jira-mcp-server reads .mcp.json from the project/workspace root.
+  cp "${helpers_root}/plugins/jira/.mcp.json" "${mcp_file}"
 
   echo "Wrote ${settings_file}"
+  echo "Wrote ${mcp_file} (jira-mcp-server)"
   echo "Plugins: jira@${marketplace_name}, utils@${marketplace_name}"
 }

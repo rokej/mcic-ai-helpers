@@ -8,13 +8,17 @@ description: Jira conventions for Server Foundation team work on managedcluster-
 ## Project
 
 - **Project key:** ACM (Red Hat Advanced Cluster Management)
-- **Cloud ID:** `redhat.atlassian.net`
+- **Host:** `https://redhat.atlassian.net`
 - **Component:** Multicluster Engine / import (match issue component when filing)
 
-## MCP-only access
+## jira-mcp-server access
 
-All Jira reads and writes use the **Atlassian Jira MCP server**. Never use Jira
-CLI or REST/curl.
+All Jira operations use **[github.com/rokej/jira-mcp-server](https://github.com/rokej/jira-mcp-server)**
+MCP tools (`get_issue`, `search_issues`, `add_comment`, `update_issue`).
+Never use Jira CLI or direct REST/curl from agent commands.
+
+Credentials: `JIRA_SERVER_URL`, `JIRA_EMAIL`, `JIRA_ACCESS_TOKEN` (see
+[docs/jira-mcp-server-setup.md](../../../docs/jira-mcp-server-setup.md)).
 
 ## Issue grooming for agent processing
 
@@ -28,7 +32,7 @@ To mark an issue for the jira:solve workflow:
 | Label | `issue-for-agent` |
 | Security | None |
 
-After processing, add label `agent-processed`.
+After processing, add label `agent-processed` via `update_issue`.
 
 ## JQL: agent queue
 
@@ -41,7 +45,7 @@ AND labels != agent-processed
 ORDER BY created ASC
 ```
 
-Use `searchJiraIssuesUsingJql` with this query.
+Use MCP tool `search_issues` with this JQL.
 
 ## Description template
 
