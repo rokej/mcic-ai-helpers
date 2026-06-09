@@ -1,6 +1,6 @@
 {
   "name": "jira",
-  "description": "Solve ACM Jira issues for managedcluster-import-controller using jira-mcp-server",
+  "description": "Solve ACM Jira issues for managedcluster-import-controller using Jira MCP tools",
   "version": "0.1.0",
   "author": {
     "name": "rokej"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Resolve Python 3 for jira-mcp-server (macOS often has python3 but not python).
+# Resolve Python 3 for local jira-mcp-server fallback (macOS often has python3 but not python).
 
 resolve_python() {
   if [[ -n "${MCIC_PYTHON:-}" ]] && command -v "${MCIC_PYTHON}" >/dev/null 2>&1; then

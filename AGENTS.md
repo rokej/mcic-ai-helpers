@@ -9,10 +9,13 @@ the Server Foundation team's managedcluster-import-controller (MCIC) automation.
 
 ## Hard rules
 
-### Jira: jira-mcp-server only
+### Jira: MCP tools (any configured server)
 
-All Jira operations MUST use **[jira-mcp-server](https://github.com/rokej/jira-mcp-server)**
-MCP tools (server name: `jira-mcp-server`). Never use:
+All Jira operations MUST use **Jira MCP tools** from whichever Jira MCP server
+is available in the environment. Do not assume a specific server name
+(`jira-mcp-server`, `user-jira-mcp-server`, Atlassian plugin MCP, etc.).
+
+Identify Jira access by **tool name**, not server name. Never use:
 
 - `jira` CLI
 - Direct `curl` / REST API calls to Jira from agent commands
@@ -27,15 +30,13 @@ Primary MCP tools:
 | Update labels/fields | `update_issue` |
 | Transition status | `transition_issue` |
 
-Credentials are configured in `.mcp.json` and loaded by jira-mcp-server:
+**Local CLI fallback:** [jira-mcp-server](https://github.com/rokej/jira-mcp-server)
+installed via `./scripts/setup-dev.sh`, credentials in workspace `.mcp.json`.
 
-- `JIRA_SERVER_URL` — e.g. `https://redhat.atlassian.net`
-- `JIRA_EMAIL` — your Atlassian account email
-- `JIRA_ACCESS_TOKEN` — API token from id.atlassian.com
+**IDE / platform hosts:** use the Jira MCP already configured in the environment.
+Set `MCIC_SKIP_JIRA_MCP_SETUP=1` for manual runner scripts when using host MCP.
 
 See [docs/jira-mcp-server-setup.md](docs/jira-mcp-server-setup.md).
-
-Install: `pip install git+https://github.com/rokej/jira-mcp-server.git`
 
 ### GitHub: gh CLI
 
@@ -63,6 +64,23 @@ See [SKILLS.md](SKILLS.md) for the full index.
 
 Commands are markdown specs consumed by Claude Code interactively or via
 `claude -p` in manual runner scripts.
+
+### Agent-swarm prompts
+
+`prompts/` holds the same workflows as model-agnostic markdown for
+[agent-swarm](https://github.com/rokej/agent-swarm) (OpenCode/Crush). Sync via
+Prompt Source — see [prompts/README.md](prompts/README.md) and
+[docs/agent-swarm-setup.md](docs/agent-swarm-setup.md).
+
+| Claude Code | Agent-swarm prompt |
+|-------------|-------------------|
+| `/jira:solve` | `prompts/jira-solve.md` |
+| `jira-agent-queue` skill | `prompts/jira-agent-queue.md` |
+| periodic Jira agent | `prompts/jira-agent-pipeline.md` |
+| `/utils:address-reviews` | `prompts/address-reviews.md` |
+| periodic review agent | `prompts/address-reviews-batch.md` |
+
+Shared conventions: `prompts/_mcic-conventions.md`
 
 ## What belongs here vs MCIC
 

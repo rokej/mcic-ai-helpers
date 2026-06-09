@@ -4,11 +4,14 @@
 # Usage:
 #   ./scripts/run-jira-solve.sh ACM-12345 [remote] [--ci]
 #
-# Jira access: github.com/rokej/jira-mcp-server MCP only (no Jira CLI, no direct curl).
+# Jira access: any configured Jira MCP server (no Jira CLI, no direct curl).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+# shellcheck source=lib/jira-mcp.sh
+source "${SCRIPT_DIR}/lib/jira-mcp.sh"
 
 ISSUE_KEY="${1:-}"
 REMOTE="${2:-origin}"
@@ -52,7 +55,7 @@ echo "=== Running jira:solve ==="
 echo "Issue:     ${ISSUE_KEY}"
 echo "Remote:    ${REMOTE}"
 echo "Workspace: ${WORKSPACE_DIR}"
-echo "Jira:      github.com/rokej/jira-mcp-server (get_issue, search_issues)"
+jira_mcp_status_line
 echo ""
 echo "Command:   claude -p \"${PROMPT}\""
 echo ""

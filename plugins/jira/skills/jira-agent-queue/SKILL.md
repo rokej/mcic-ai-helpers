@@ -1,6 +1,6 @@
 ---
 name: jira-agent-queue
-description: List unresolved ACM Jira issues ready for the MCIC agent using jira-mcp-server search_issues. Use when asked to list the agent queue, find issue-for-agent tickets, show pending Jira work, or pick the next issue to solve.
+description: List unresolved ACM Jira issues ready for the MCIC agent using search_issues. Use when asked to list the agent queue, find issue-for-agent tickets, show pending Jira work, or pick the next issue to solve.
 ---
 
 # Jira agent queue listing
@@ -8,9 +8,13 @@ description: List unresolved ACM Jira issues ready for the MCIC agent using jira
 Lists issues eligible for `/jira:solve` on managedcluster-import-controller —
 equivalent to the HyperShift `periodic-jira-agent` JQL query step (manual phase 1).
 
-## Jira access (jira-mcp-server only)
+## Jira access (any MCP server)
 
-Use MCP tool **`search_issues`** from **github.com/rokej/jira-mcp-server**.
+Use whichever **Jira MCP server** is available in the environment. Do **not**
+assume a specific server name — it varies (e.g. `jira-mcp-server`,
+`user-jira-mcp-server`, Atlassian plugin MCP).
+
+Identify Jira access by **tool name**: call MCP tool **`search_issues`**.
 
 Do **not** use Jira CLI, `curl`, or direct REST API calls.
 
@@ -29,7 +33,7 @@ This matches issues groomed per `docs/jira-issue-grooming.md`.
 
 ## How to list issues
 
-1. Call **`search_issues`** with:
+1. Call **`search_issues`** (via any available Jira MCP server) with:
    - `jql`: the query above (single line is fine)
    - `max_results`: `20` for listing; `1` when picking the next issue only
 

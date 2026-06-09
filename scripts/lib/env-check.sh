@@ -16,18 +16,42 @@ check_command() {
   fi
 }
 
+# shellcheck source=jira-mcp.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/jira-mcp.sh"
+
 check_jira_mcp_server() {
+  if jira_mcp_use_environment; then
+    return 0
+  fi
+
+  if jira_mcp_write_local_config; then
+    return 0
+  fi
+
   resolve_python || return 1
 
-  if ! "${MCIC_PYTHON}" -c "import jira_mcp_server" >/dev/null 2>&1; then
-    err "jira-mcp-server is not installed for ${MCIC_PYTHON}."
-    err "Install: ${MCIC_PYTHON} -m pip install git+https://github.com/rokej/jira-mcp-server.git"
-    err "Or run: ./scripts/setup-dev.sh"
+  if ! jira_mcp_local_available; then
+    err "No Jira MCP available for local Claude Code runs."
+    err "Either:"
+    err "  1. Install local fallback: ./scripts/setup-dev.sh"
+    err "  2. Export JIRA_SERVER_URL, JIRA_EMAIL, JIRA_ACCESS_TOKEN for .mcp.json"
+    err "  3. Set MCIC_SKIP_JIRA_MCP_SETUP=1 when the host already provides Jira MCP"
+    err "See docs/jira-mcp-server-setup.md"
     return 1
   fi
+
+  return 0
 }
 
 check_jira_env() {
+  if jira_mcp_use_environment; then
+    return 0
+  fi
+
+  if ! jira_mcp_write_local_config; then
+    return 0
+  fi
+
   local missing=0
   for var in JIRA_SERVER_URL JIRA_EMAIL JIRA_ACCESS_TOKEN; do
     if [[ -z "${!var:-}" ]]; then
@@ -36,10 +60,11 @@ check_jira_env() {
     fi
   done
   if [[ "${missing}" -ne 0 ]]; then
-    err "Export Jira credentials for jira-mcp-server:"
+    err "Export Jira credentials for the local MCP fallback:"
     err '  export JIRA_SERVER_URL="https://redhat.atlassian.net"'
     err '  export JIRA_EMAIL="you@redhat.com"'
     err '  export JIRA_ACCESS_TOKEN="your-token"'
+    err "Or set MCIC_SKIP_JIRA_MCP_SETUP=1 to use a host-provided Jira MCP."
     err "See docs/jira-mcp-server-setup.md"
     return 1
   fi
@@ -58,8 +83,7 @@ check_env() {
   fi
 
   echo "=== Jira access ==="
-  echo "This project uses github.com/rokej/jira-mcp-server MCP tools ONLY."
-  echo "Do NOT use jira CLI or direct curl to Jira."
+  jira_mcp_access_hint
   echo ""
 
   check_jira_mcp_server || missing=1
@@ -68,7 +92,7 @@ check_env() {
     exit 1
   fi
 
-  echo "Prerequisites OK (claude, gh, git, ${MCIC_PYTHON}, jira-mcp-server)"
+  echo "Prerequisites OK (claude, gh, git, ${MCIC_PYTHON}, Jira MCP)"
 }
 
 check_env_with_jira() {

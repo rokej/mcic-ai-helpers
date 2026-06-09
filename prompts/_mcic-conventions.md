@@ -1,0 +1,88 @@
+# MCIC conventions (shared reference)
+
+Use this section in every agent-swarm prompt. Paths assume default Swarmer clone layout.
+
+## Repositories
+
+| Path | GitHub |
+|------|--------|
+| `/workspace/managedcluster-import-controller` | `stolostron/managedcluster-import-controller` |
+| `/workspace/mcic-ai-helpers` (optional) | `rokej/mcic-ai-helpers` |
+
+**Working directory:** `cd /workspace/managedcluster-import-controller` before `make`, `git`, or `gh`.
+
+- Default branch: `main`
+- Go module: `github.com/stolostron/managedcluster-import-controller`
+
+## Jira (MCP only)
+
+Use **Jira MCP tools** (`search_issues`, `get_issue`, `add_comment`, `update_issue`).
+Do **not** use Jira CLI or direct REST/curl.
+
+**Host:** `https://redhat.atlassian.net`
+**Project:** ACM
+
+### Agent queue JQL
+
+```
+project = ACM AND resolution = Unresolved AND status in (New, "To Do") AND labels = issue-for-agent AND labels != agent-processed ORDER BY created ASC
+```
+
+### Grooming
+
+Issues need label `issue-for-agent`, status New or To Do, resolution Unresolved.
+After successful solve, add label `agent-processed` via `update_issue`.
+
+## Verification (required before commit / push)
+
+```bash
+make check   # copyright + lint
+make test    # full unit tests (envtest)
+```
+
+- Do **not** substitute `go test ./pkg/...` for `make test`
+- E2E optional unless the issue explicitly requires it (`make e2e-test-core`)
+
+## Commits
+
+Conventional Commits + DCO sign-off:
+
+```
+fix(autoimport): short title
+
+Explain why this change is needed.
+
+Signed-off-by: Your Name <email@redhat.com>
+```
+
+Branch naming: `fix-ACM-12345` or `fix-ACM-12345-short-desc`
+
+## Controller map (quick reference)
+
+| Symptom | Look in |
+|---------|---------|
+| Import stuck | `pkg/controller/autoimport`, `csr`, `manifestwork`, `importconfig` |
+| Detach/cleanup | `resourcecleanup`, `clusternamespacedeletion`, `managedcluster` |
+| Hosted mode | `pkg/controller/hosted` |
+| Hive import | `pkg/controller/clusterdeployment` |
+
+Entry: `pkg/controller/controller.go` registers all controllers.
+
+## E2E flakes
+
+If touching `test/e2e` or klusterlet-agent lifecycle, read `test/e2e/README.md`
+(leader-election after agent rollout).
+
+## GitHub
+
+- Use `gh` for PRs and review comments
+- Draft PRs until a human marks ready
+- PR title: `ACM-12345: summary`
+- Footer: `🤖 Generated via mcic-ai-helpers agent-swarm`
+
+## Automation footer for review replies
+
+```
+---
+*AI-assisted response via agent-swarm*
+```

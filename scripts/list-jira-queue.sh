@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Print agent-queue JQL and run Claude to list matching Jira issues via jira-mcp-server.
+# Print agent-queue JQL and run Claude to list matching Jira issues via MCP.
 #
 # Usage:
 #   ./scripts/list-jira-queue.sh           # invoke Claude to list queue
@@ -9,6 +9,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
+# shellcheck source=lib/jira-mcp.sh
+source "${SCRIPT_DIR}/lib/jira-mcp.sh"
+
 JQL='project = ACM AND resolution = Unresolved AND status in (New, "To Do") AND labels = issue-for-agent AND labels != agent-processed ORDER BY created ASC'
 
 if [[ "${1:-}" == "--jql-only" ]]; then
@@ -17,7 +20,7 @@ if [[ "${1:-}" == "--jql-only" ]]; then
 
 ${JQL}
 
-Use jira-mcp-server MCP tool search_issues, or ask Claude (jira-agent-queue skill).
+Use any available Jira MCP tool search_issues, or ask Claude (jira-agent-queue skill).
 EOF
   exit 0
 fi
@@ -36,7 +39,7 @@ setup_claude_plugins "${WORKSPACE_DIR}" "${ROOT_DIR}"
 
 cd "${WORKSPACE_DIR}"
 
-PROMPT="Use the jira-agent-queue skill. Call search_issues with this JQL and present the results as a table of key, summary, status, and created date:
+PROMPT="Use the jira-agent-queue skill. Use any available Jira MCP server and call search_issues with this JQL. Present the results as a table of key, summary, status, and created date:
 
 ${JQL}
 
@@ -44,7 +47,7 @@ max_results: 20"
 
 echo ""
 echo "=== Listing Jira agent queue ==="
-echo "Jira: github.com/rokej/jira-mcp-server (search_issues)"
+jira_mcp_status_line
 echo ""
 
 claude -p "${PROMPT}" \

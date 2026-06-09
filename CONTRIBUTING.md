@@ -21,26 +21,36 @@ Register new plugins in `.claude-plugin/marketplace.json` and update [SKILLS.md]
 
 ## Jira commands
 
-All Jira-related commands **must** use **[jira-mcp-server](https://github.com/rokej/jira-mcp-server)**
-MCP tools (`get_issue`, `search_issues`, `add_comment`, `update_issue`, etc.).
+All Jira-related commands **must** use **Jira MCP tools** (`get_issue`,
+`search_issues`, `add_comment`, `update_issue`, etc.) from whichever Jira MCP
+server is available in the environment.
 
 Do not add:
 
 - `jira` CLI references
 - Direct `curl` REST examples in command specs
+- Hardcoded MCP server names (use tool names instead)
 
-Credentials belong in `.mcp.json` / environment variables consumed by
-jira-mcp-server — never hardcode tokens in command markdown.
+Credentials belong in environment variables or host MCP config — never hardcode
+tokens in command markdown.
 
 ## Testing locally
+
+**With host Jira MCP (Cursor, etc.):**
+
+```bash
+export MCIC_SKIP_JIRA_MCP_SETUP=1
+./scripts/run-jira-solve.sh ACM-XXXXX
+```
+
+**With local Claude Code CLI fallback:**
 
 ```bash
 export JIRA_SERVER_URL="https://redhat.atlassian.net"
 export JIRA_EMAIL="you@redhat.com"
 export JIRA_ACCESS_TOKEN="your-token"
 
-pip install git+https://github.com/rokej/jira-mcp-server.git
-
+./scripts/setup-dev.sh
 ./scripts/run-jira-solve.sh ACM-XXXXX
 ```
 

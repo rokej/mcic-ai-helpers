@@ -1,4 +1,5 @@
 {
+  "_comment": "Local Claude Code CLI fallback only. In Cursor/Ambient, use the host Jira MCP and set MCIC_SKIP_JIRA_MCP_SETUP=1.",
   "mcpServers": {
     "jira-mcp-server": {
       "command": "python3",

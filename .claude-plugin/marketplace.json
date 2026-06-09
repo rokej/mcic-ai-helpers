@@ -7,7 +7,7 @@
     {
       "name": "jira",
       "source": "./plugins/jira",
-      "description": "Jira issue solving for managedcluster-import-controller (jira-mcp-server)",
+      "description": "Jira issue solving for managedcluster-import-controller (Jira MCP)",
       "version": "0.1.2",
       "category": "productivity",
       "keywords": [

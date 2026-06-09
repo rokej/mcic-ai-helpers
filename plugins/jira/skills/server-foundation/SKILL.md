@@ -11,14 +11,27 @@ description: Jira conventions for Server Foundation team work on managedcluster-
 - **Host:** `https://redhat.atlassian.net`
 - **Component:** Multicluster Engine / import (match issue component when filing)
 
-## jira-mcp-server access
+## Jira MCP access
 
-All Jira operations use **[github.com/rokej/jira-mcp-server](https://github.com/rokej/jira-mcp-server)**
-MCP tools (`get_issue`, `search_issues`, `add_comment`, `update_issue`).
+All Jira operations use **MCP tools** from whichever Jira MCP server is
+available in the environment. Do not assume a specific server name.
+
+| Operation | MCP tool |
+|-----------|----------|
+| Fetch issue | `get_issue` |
+| Search queue | `search_issues` |
+| Post comment | `add_comment` |
+| Update labels/fields | `update_issue` |
+| Transition status | `transition_issue` |
+
 Never use Jira CLI or direct REST/curl from agent commands.
 
-Credentials: `JIRA_SERVER_URL`, `JIRA_EMAIL`, `JIRA_ACCESS_TOKEN` (see
-[docs/jira-mcp-server-setup.md](../../../docs/jira-mcp-server-setup.md)).
+**Local fallback (Claude Code CLI):** [jira-mcp-server](https://github.com/rokej/jira-mcp-server)
+with `JIRA_SERVER_URL`, `JIRA_EMAIL`, `JIRA_ACCESS_TOKEN` — see
+[docs/jira-mcp-server-setup.md](../../../docs/jira-mcp-server-setup.md).
+
+**IDE / platform hosts:** use the Jira MCP already configured (Cursor, Ambient,
+Atlassian plugin, etc.).
 
 ## Issue grooming for agent processing
 

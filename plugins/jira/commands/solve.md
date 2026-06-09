@@ -25,13 +25,16 @@ Analyze an ACM Jira issue and implement a fix in
 
 ---
 
-## Jira integration (jira-mcp-server only)
+## Jira integration (MCP tools only)
 
-> **HARD RULE:** Use the **jira-mcp-server** MCP tools for ALL Jira reads.
+> **HARD RULE:** Use **Jira MCP tools** for ALL Jira reads and writes.
+> Use whichever Jira MCP server is available in the environment — do not assume
+> a specific server name.
 > Do NOT use the Jira CLI or direct `curl`/REST calls from this command.
 
-Authentication is handled by jira-mcp-server via `JIRA_SERVER_URL`, `JIRA_EMAIL`,
-and `JIRA_ACCESS_TOKEN` in `.mcp.json` — not by the agent.
+Authentication is handled by the configured Jira MCP server (via host credentials
+or `JIRA_SERVER_URL`, `JIRA_EMAIL`, `JIRA_ACCESS_TOKEN` in workspace `.mcp.json`
+for local CLI runs) — not by ad-hoc agent env vars.
 
 ### Required MCP tools
 
@@ -152,7 +155,7 @@ gh pr create --draft --title "ACM-12345: ..." --body "..."
 
 ### 6. Jira follow-up (optional)
 
-After PR creation, use jira-mcp-server MCP tools:
+After PR creation, use Jira MCP tools:
 
 1. `add_comment` — post the PR URL on the issue
 2. `update_issue` — add label `agent-processed` (if requested)
