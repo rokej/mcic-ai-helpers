@@ -6,43 +6,59 @@ Implement a fix for a **single** groomed ACM issue and open a **draft** PR on
 Use when the session `instruction_prompt` contains an issue key (e.g. `ACM-12345`)
 or when the user names a key explicitly.
 
+## MCIC conventions
+
+**Working directory:** `/workspace/managedcluster-import-controller` (`main`, module
+`github.com/stolostron/managedcluster-import-controller`).
+
+**Jira:** MCP tools only (`get_issue`, `search_issues`, `add_comment`, `update_issue`).
+Host `https://redhat.atlassian.net`, project ACM. No Jira CLI or curl.
+
+**Verification before commit/push:** `make check` then `make test` (not `go test ./pkg/...`).
+
+**Branch:** `fix-ACM-<digits>`. Commits: Conventional Commits + `Signed-off-by`.
+
+**Controller hints:** import stuck → `autoimport`, `csr`, `manifestwork`, `importconfig`;
+detach → `resourcecleanup`, `clusternamespacedeletion`, `managedcluster`.
+
+Optional disk copy: `/workspace/mcic-ai-helpers/prompts/_mcic-conventions.md` or
+`docs/mcic-conventions.md` (not `docs/_mcic-conventions.md`).
+
 ## Instructions
 
-1. Read `_mcic-conventions.md` (paths, Jira MCP, verification, commits).
-
-2. **Issue key**
+1. **Issue key**
    - Parse from additional instructions / `instruction_prompt`
    - Format: `ACM-<digits>`
    - If missing, stop and report that a key is required
 
-3. **Fetch issue** — MCP `get_issue` with `issue_key`
+2. **Fetch issue** — MCP `get_issue` with `issue_key`
    - Extract: summary, description, labels, status
    - From description: Context, Acceptance criteria (required); repro steps if present
    - If groomed sections are thin, proceed with assumptions and document them in the PR
 
-4. **Eligibility check**
+3. **Eligibility check**
    - Project ACM, unresolved, status New or To Do
    - Has label `issue-for-agent`, not `agent-processed`
    - If not eligible, explain why and stop (do not open a PR)
 
-5. **Codebase** — in `/workspace/managedcluster-import-controller`:
+4. **Codebase** — in `/workspace/managedcluster-import-controller`:
    - Search `pkg/controller/`, `pkg/helpers/`, `pkg/bootstrap/`, tests
-   - Use controller map in conventions to narrow scope
+   - Use controller hints above to narrow scope
    - Read `test/e2e/README.md` if touching E2E or klusterlet timing
 
-6. **Plan** — write `/workspace/managedcluster-import-controller/.work/jira/solve/spec-<KEY>.md`
+5. **Plan** — write `/workspace/managedcluster-import-controller/.work/jira/solve/spec-<KEY>.md`
    - Problem, approach, files to change, test plan
    - In scheduled/automated runs, implement immediately (no user prompt)
 
-7. **Implement**
+6. **Implement**
    - Follow existing patterns; add unit tests for new behavior
    - Run `make check` and `make test`; fix failures from your changes
 
-8. **Commit**
+7. **Commit**
    - Branch: `fix-<KEY>` (e.g. `fix-ACM-12345`)
-   - Conventional commit + `Signed-off-by` (see conventions)
+   - Conventional commit + `Signed-off-by`
 
-9. **Push and draft PR**
+8. **Push and draft PR**
    ```bash
    cd /workspace/managedcluster-import-controller
    git push -u origin fix-<KEY>
@@ -64,11 +80,11 @@ or when the user names a key explicitly.
    )"
    ```
 
-10. **Jira follow-up** (MCP only)
+9. **Jira follow-up** (MCP only)
     - `add_comment` — link the draft PR URL
     - `update_issue` — add label `agent-processed`
 
-11. **Summary** — issue key, branch, PR URL, verification status
+10. **Summary** — issue key, branch, PR URL, verification status
 
 ## Do not
 

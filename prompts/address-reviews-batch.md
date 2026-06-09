@@ -3,11 +3,15 @@
 Periodic **review-agent** flow: find open draft PRs from the Jira solve agent,
 rebase if needed, address reviews, fix CI-related feedback where possible.
 
+## MCIC conventions
+
+**Working directory:** `/workspace/managedcluster-import-controller`. **Verify:**
+`make check`, `make test`. Follow `address-reviews.md` steps per PR. **Helpers repo:**
+`/workspace/mcic-ai-helpers` for `check_replied.py`.
+
 ## Instructions
 
-1. Read `_mcic-conventions.md`.
-
-2. **Find candidate PRs**
+1. **Find candidate PRs**
    ```bash
    cd /workspace/managedcluster-import-controller
    gh pr list --repo stolostron/managedcluster-import-controller \
@@ -22,13 +26,13 @@ rebase if needed, address reviews, fix CI-related feedback where possible.
 
    Sort by `createdAt` ascending. Cap at **3 PRs per run** unless `instruction_prompt` sets another limit.
 
-3. **Empty set**
+2. **Empty set**
    - If no candidates: report success, nothing to do
 
-4. **Per PR** — run the `address-reviews.md` workflow:
+3. **Per PR** — run the `address-reviews.md` workflow:
    - Checkout → fetch comments → address → `make check` + `make test` → push → reply
 
-5. **Rebase stale PRs** (before addressing comments if branch is behind base):
+4. **Rebase stale PRs** (before addressing comments if branch is behind base):
    ```bash
    gh pr checkout <PR>
    BASE=$(gh pr view <PR> --json baseRefName -q '.baseRefName')
@@ -36,17 +40,17 @@ rebase if needed, address reviews, fix CI-related feedback where possible.
    git push --force-with-lease
    ```
 
-6. **CI failures**
+5. **CI failures**
    - If PR has failing checks, read logs via `gh pr checks <PR>` and `gh run view`
    - Fix only if failure is clearly caused by PR changes (not infra flakes)
    - Comment on PR if blocked by external flake
 
-7. **Limits**
+6. **Limits**
    - Do not merge PRs
    - Do not mark draft PRs ready for review
    - Stop after processing the cap; list remaining PRs in summary
 
-8. **Final summary** — table: PR #, branch, actions taken, verification, open threads left
+7. **Final summary** — table: PR #, branch, actions taken, verification, open threads left
 
 ## Optional instruction_prompt overrides
 

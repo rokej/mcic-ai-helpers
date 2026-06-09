@@ -17,10 +17,13 @@ instead of Prow.
 | `address-reviews-batch.md` | `periodic-review-agent` | `mcic-review-agent` | `0 8-23/3 * * 1-5` |
 | `address-reviews.md` | `address-review-comments` | `mcic-address-reviews` | On-demand + `instruction_prompt: PR 42` |
 
-## Shared reference
+## Conventions
 
-Read `_mcic-conventions.md` at the start of every workflow (paths, verification,
-Jira rules, commit format).
+Each workflow prompt embeds an **MCIC conventions** section (self-contained for
+agent-swarm — only one prompt file is injected per run). Extended reference:
+
+- `prompts/_mcic-conventions.md`
+- `docs/mcic-conventions.md` (mirror under `docs/`)
 
 ## Workspace layout
 
@@ -29,7 +32,7 @@ Configure session repos so the agent pod has:
 | Clone path | Repository |
 |------------|------------|
 | `/workspace/managedcluster-import-controller` | `stolostron/managedcluster-import-controller` |
-| `/workspace/mcic-ai-helpers` (optional) | `rokej/mcic-ai-helpers` — for `check_replied.py` |
+| `/workspace/mcic-ai-helpers` | `rokej/mcic-ai-helpers` — conventions + `check_replied.py` |
 
 Working directory for `make` / `gh`: `/workspace/managedcluster-import-controller`
 

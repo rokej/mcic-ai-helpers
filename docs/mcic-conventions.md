@@ -1,11 +1,9 @@
-# MCIC conventions (shared reference)
+# MCIC conventions (agent-swarm)
 
-Embedded in every workflow prompt under `prompts/`. If reading from disk:
+Mirror of `prompts/_mcic-conventions.md` for agents that search under `docs/`.
+Canonical copy: `/workspace/mcic-ai-helpers/prompts/_mcic-conventions.md`
 
-- `/workspace/mcic-ai-helpers/prompts/_mcic-conventions.md`
-- `/workspace/mcic-ai-helpers/docs/mcic-conventions.md` (mirror)
-
-Do **not** use `docs/_mcic-conventions.md` — that path does not exist.
+Paths assume default Swarmer clone layout.
 
 ## Repositories
 

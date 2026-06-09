@@ -31,9 +31,11 @@ Create a Swarmer workspace (UI or API) with:
 | Repo | Clone path | Branch |
 |------|------------|--------|
 | `stolostron/managedcluster-import-controller` | `/workspace/managedcluster-import-controller` | `main` |
-| `rokej/mcic-ai-helpers` (optional) | `/workspace/mcic-ai-helpers` | `main` |
+| `rokej/mcic-ai-helpers` | `/workspace/mcic-ai-helpers` | `main` |
 
-The helpers repo is only needed for `check_replied.py` in review workflows.
+The helpers repo provides `check_replied.py`, conventions on disk (`prompts/_mcic-conventions.md`,
+`docs/mcic-conventions.md`), and the git prompt source. Workflow prompts embed conventions inline
+so a single injected prompt is self-contained — refresh the prompt source after updates.
 
 ### GitHub credentials
 
