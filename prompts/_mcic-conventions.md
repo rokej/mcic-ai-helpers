@@ -1,11 +1,15 @@
 # MCIC conventions (shared reference)
 
-Embedded in every workflow prompt under `prompts/`. If reading from disk:
+Embedded in every workflow prompt under `prompts/`. **Agents should use inline
+conventions in the active prompt** — not a separate read step.
 
-- `/workspace/mcic-ai-helpers/prompts/_mcic-conventions.md`
+If reading from disk (optional):
+
+- `/workspace/mcic-ai-helpers/prompts/_mcic-conventions.md` (this file)
 - `/workspace/mcic-ai-helpers/docs/mcic-conventions.md` (mirror)
 
-Do **not** use `docs/_mcic-conventions.md` — that path does not exist.
+Do **not** read `/workspace/_mcic-conventions.md` — wrong path (use mcic-ai-helpers prefix).
+Do **not** use `docs/_mcic-conventions.md` — does not exist.
 
 ## Repositories
 

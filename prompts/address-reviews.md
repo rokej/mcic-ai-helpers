@@ -5,6 +5,10 @@ Address review feedback on a single pull request in
 
 Use when `instruction_prompt` contains a PR number (e.g. `42` or `PR 42`).
 
+> **Conventions are inline in the section below.** Do **not** read `_mcic-conventions.md`
+> from `/workspace/` or any path — that file is not at the workspace root. Do **not** add
+> a todo step to read conventions from disk.
+
 ## MCIC conventions
 
 **Working directory:** `/workspace/managedcluster-import-controller`. **Verify after
@@ -50,6 +54,14 @@ If `permission denied` on `/home/node/go/pkg/mod`, `go-env.sh` was not sourced.
    ```
    - Skip bot noise and already-resolved threads where possible
    - Prioritize: ACTION_INSTRUCTION → BLOCKING → CHANGE_REQUEST → QUESTION → SUGGESTION
+
+3b. **Nothing to do** — stop successfully when:
+   - No inline or issue comments need a response, **or**
+   - Every question thread already has a reply (check `in_reply_to_id` chains and
+     `*AI-assisted response*` / `*AI-assisted response via agent-swarm*` footers), **or**
+   - Only bot/openshift-ci comments remain
+
+   Report: "no actionable review comments" and list threads already answered.
 
 4. **Duplicate replies**
    - Before posting, check if you already replied (search thread for automation footer)
@@ -110,6 +122,7 @@ If `permission denied` on `/home/node/go/pkg/mod`, `go-env.sh` was not sourced.
 
 ## Do not
 
+- Read `_mcic-conventions.md` from `/workspace/` or disk (conventions are inline above)
 - Push without `make check` and `make test` when code changed
 - Skip verification and post replies when `make` failed or timed out (except pure
   explanation replies with zero code changes)

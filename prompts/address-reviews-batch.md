@@ -3,6 +3,8 @@
 Periodic **review-agent** flow: find open draft PRs from the Jira solve agent,
 rebase if needed, address reviews, fix CI-related feedback where possible.
 
+> **Conventions are inline below.** Do not read `_mcic-conventions.md` from `/workspace/`.
+
 ## MCIC conventions
 
 **Working directory:** `/workspace/managedcluster-import-controller`. **Verify:**
