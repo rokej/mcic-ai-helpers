@@ -12,6 +12,11 @@ How to prepare ACM issues for the `jira:solve` agent workflow.
 | Label | `issue-for-agent` |
 | Security | None |
 
+## While processing
+
+When the agent picks up an issue, it transitions status to **In Progress** via MCP
+(`transition_issue` / `transitionJiraIssue`) before implementing.
+
 ## After processing
 
 Add label `agent-processed` via Jira MCP tool `update_issue`, or

@@ -8,7 +8,8 @@ Designed for **non-interactive** scheduled runs (`instruction_prompt` empty or `
 ## MCIC conventions
 
 **Working directory:** `/workspace/managedcluster-import-controller`. **Jira:** MCP only
-(`search_issues`, `get_issue`, `add_comment`, `update_issue`). **Verify:** `make check`,
+(`search_issues`, `get_issue`, `add_comment`, `update_issue`, `transition_issue` or
+`transitionJiraIssue`). **Verify:** `make check`,
 `make test`. **Agent queue JQL:**
 
 ```
@@ -30,8 +31,8 @@ project = ACM AND resolution = Unresolved AND status in (New, "To Do") AND label
    - Record `issue_key` and summary in your working notes
 
 4. **Solve** — follow the same steps as `jira-solve.md` for that `issue_key`:
-   - `get_issue` → analyze → plan file → implement → `make check` + `make test`
-   - Branch `fix-<KEY>`, conventional commits, draft PR
+   - `get_issue` → eligibility → **transition to In Progress** → plan → implement
+   - `make check` + `make test`; branch `fix-<KEY>`, conventional commits, draft PR
    - Jira: `add_comment` (PR link) + `update_issue` (label `agent-processed`)
 
 5. **Limits**

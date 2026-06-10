@@ -21,8 +21,11 @@ Do **not** use `docs/_mcic-conventions.md` — that path does not exist.
 
 ## Jira (MCP only)
 
-Use **Jira MCP tools** (`search_issues`, `get_issue`, `add_comment`, `update_issue`).
-Do **not** use Jira CLI or direct REST/curl.
+Use **Jira MCP tools** (`search_issues`, `get_issue`, `add_comment`, `update_issue`,
+`transition_issue` or `transitionJiraIssue`). Do **not** use Jira CLI or direct REST/curl.
+
+When picking up an issue to solve, transition status to **In Progress** before coding
+(skip if already In Progress).
 
 **Host:** `https://redhat.atlassian.net`
 **Project:** ACM

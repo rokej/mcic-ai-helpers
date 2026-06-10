@@ -45,6 +45,9 @@ To mark an issue for the jira:solve workflow:
 | Label | `issue-for-agent` |
 | Security | None |
 
+When picking up an issue, transition status to **In Progress** via `transition_issue`
+(or `transitionJiraIssue` on Atlassian MCP) before implementing.
+
 After processing, add label `agent-processed` via `update_issue`.
 
 ## JQL: agent queue

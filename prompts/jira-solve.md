@@ -11,8 +11,9 @@ or when the user names a key explicitly.
 **Working directory:** `/workspace/managedcluster-import-controller` (`main`, module
 `github.com/stolostron/managedcluster-import-controller`).
 
-**Jira:** MCP tools only (`get_issue`, `search_issues`, `add_comment`, `update_issue`).
-Host `https://redhat.atlassian.net`, project ACM. No Jira CLI or curl.
+**Jira:** MCP tools only (`get_issue`, `search_issues`, `add_comment`, `update_issue`,
+`transition_issue` or `transitionJiraIssue`). Host `https://redhat.atlassian.net`, project
+ACM. No Jira CLI or curl.
 
 **Verification before commit/push:** `make check` then `make test` (not `go test ./pkg/...`).
 In agent-swarm pods set `GOMODCACHE=/tmp/gomodcache GOCACHE=/tmp/gocache GOPATH=/tmp/gopath`
@@ -43,24 +44,31 @@ Optional disk copy: `/workspace/mcic-ai-helpers/prompts/_mcic-conventions.md` or
    - Has label `issue-for-agent`, not `agent-processed`
    - If not eligible, explain why and stop (do not open a PR)
 
-4. **Codebase** — in `/workspace/managedcluster-import-controller`:
+4. **Start work in Jira** — transition status to **In Progress** (MCP only):
+   - If status is already **In Progress**, skip
+   - **jira-mcp-server:** `transition_issue` with `issue_key` and `transition`: `In Progress`
+   - **Atlassian MCP:** `getTransitionsForJiraIssue` → find transition named
+     `In Progress` → `transitionJiraIssue` with that transition id
+   - If transition fails, `add_comment` with the error and stop (do not open a PR)
+
+5. **Codebase** — in `/workspace/managedcluster-import-controller`:
    - Search `pkg/controller/`, `pkg/helpers/`, `pkg/bootstrap/`, tests
    - Use controller hints above to narrow scope
    - Read `test/e2e/README.md` if touching E2E or klusterlet timing
 
-5. **Plan** — write `/workspace/managedcluster-import-controller/.work/jira/solve/spec-<KEY>.md`
+6. **Plan** — write `/workspace/managedcluster-import-controller/.work/jira/solve/spec-<KEY>.md`
    - Problem, approach, files to change, test plan
    - In scheduled/automated runs, implement immediately (no user prompt)
 
-6. **Implement**
+7. **Implement**
    - Follow existing patterns; add unit tests for new behavior
    - Run `make check` and `make test`; fix failures from your changes
 
-7. **Commit**
+8. **Commit**
    - Branch: `fix-<KEY>` (e.g. `fix-ACM-12345`)
    - Conventional commit + `Signed-off-by`
 
-8. **Push and draft PR**
+9. **Push and draft PR**
    ```bash
    cd /workspace/managedcluster-import-controller
    git push -u origin fix-<KEY>
@@ -82,11 +90,11 @@ Optional disk copy: `/workspace/mcic-ai-helpers/prompts/_mcic-conventions.md` or
    )"
    ```
 
-9. **Jira follow-up** (MCP only)
+10. **Jira follow-up** (MCP only)
     - `add_comment` — link the draft PR URL
     - `update_issue` — add label `agent-processed`
 
-10. **Summary** — issue key, branch, PR URL, verification status
+11. **Summary** — issue key, branch, PR URL, verification status
 
 ## Do not
 

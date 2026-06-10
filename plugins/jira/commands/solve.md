@@ -42,6 +42,7 @@ for local CLI runs) — not by ad-hoc agent env vars.
 |------|----------|---------|
 | Fetch issue | `get_issue` | Summary, description, status, labels |
 | Search queue | `search_issues` | Find issues matching agent JQL |
+| Start work | `transition_issue` | Move issue to **In Progress** when picked up |
 | Post PR link | `add_comment` | Link draft PR after creation |
 | Mark processed | `update_issue` | Add `agent-processed` label |
 
@@ -107,7 +108,21 @@ the issue before proceeding.
 If `--ci` IS set, proceed with available information and note assumptions in the
 PR description.
 
-### 2. Codebase analysis
+Confirm eligibility: project ACM, label `issue-for-agent`, not `agent-processed`,
+status New or To Do.
+
+### 2. Start work in Jira
+
+After eligibility passes, transition the issue to **In Progress** (skip if already
+In Progress):
+
+- **jira-mcp-server:** `transition_issue` with `issue_key` and `transition`: `In Progress`
+- **Atlassian MCP:** `getTransitionsForJiraIssue` → `transitionJiraIssue` with the
+  In Progress transition id
+
+If transition fails, comment on the issue and stop.
+
+### 3. Codebase analysis
 
 Search MCIC for relevant code:
 
@@ -119,7 +134,7 @@ Search MCIC for relevant code:
 Use Grep and Glob. Read `test/e2e/README.md` if touching klusterlet-agent or
 ManagedCluster lifecycle tests (leader-election race patterns).
 
-### 3. Solution implementation
+### 4. Solution implementation
 
 1. Save a plan to `.work/jira/solve/spec-<KEY>.md`
 2. If `--ci` is NOT set: ask user to review the plan before coding
@@ -127,7 +142,7 @@ ManagedCluster lifecycle tests (leader-election race patterns).
 4. Follow existing patterns; add unit tests for new behavior
 5. Run `make check` and `make test` — fix failures caused by your changes
 
-### 4. Commit creation
+### 5. Commit creation
 
 - Branch name: `fix-<KEY>` (e.g. `fix-ACM-12345`)
 - Use [Conventional Commits](https://www.conventionalcommits.org/) with a body
@@ -138,7 +153,7 @@ ManagedCluster lifecycle tests (leader-election race patterns).
   - `test:` — test additions
   - `docs:` — documentation in `docs/`
 
-### 5. PR creation
+### 6. PR creation
 
 - Push to remote `$2` (default: `origin`)
 - Create **draft** PR against `stolostron/managedcluster-import-controller` `main`
@@ -153,7 +168,7 @@ ManagedCluster lifecycle tests (leader-election race patterns).
 gh pr create --draft --title "ACM-12345: ..." --body "..."
 ```
 
-### 6. Jira follow-up (optional)
+### 7. Jira follow-up (optional)
 
 After PR creation, use Jira MCP tools:
 
