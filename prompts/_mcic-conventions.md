@@ -44,6 +44,7 @@ After successful solve, add label `agent-processed` via `update_issue`.
 ## Verification (required before commit / push)
 
 ```bash
+source /workspace/mcic-ai-helpers/scripts/lib/go-env.sh
 make check   # copyright + lint
 make test    # full unit tests (envtest)
 ```

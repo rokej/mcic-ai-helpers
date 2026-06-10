@@ -44,23 +44,22 @@ so a single injected prompt is self-contained — refresh the prompt source afte
 
 ### Go build cache (required for `make check` / `make test`)
 
-Agent pods often run as a non-root user (`node`) with a read-only or unwritable
-default `GOMODCACHE` under `/home/node/go`. Set workspace **Environment Variables**
-(Workspaces → **Environment Variables**) so `go` can write caches:
+Agent pods use a default `GOPATH` under `/home/node/go` that is often **not
+writable**. You need **both**:
 
-| Variable | Value |
-|----------|-------|
-| `GOMODCACHE` | `/tmp/gomodcache` |
-| `GOCACHE` | `/tmp/gocache` |
-| `GOPATH` | `/tmp/gopath` |
+1. **agent-swarm** (recent): session pods inject `GOMODCACHE`, `GOCACHE`, `GOPATH`
+   under `/tmp` — redeploy agent-swarm and start a **new session** after upgrading.
+2. **mcic-ai-helpers**: clone `rokej/mcic-ai-helpers` to `/workspace/mcic-ai-helpers`
+   so agents can run:
+   ```bash
+   source /workspace/mcic-ai-helpers/scripts/lib/go-env.sh
+   cd /workspace/managedcluster-import-controller
+   make check
+   ```
+   Or: `./scripts/verify-mcic.sh all` from the helpers repo.
 
-Verify in a session pod before relying on agents:
-
-```bash
-mkdir -p /tmp/gomodcache /tmp/gocache /tmp/gopath
-cd /workspace/managedcluster-import-controller
-make check
-```
+Optional override via workspace **Environment Variables** (same three keys under
+`/tmp`) — only needed on older agent-swarm builds without pod defaults.
 
 `make check` can take several minutes (remote lint script + `go list`). Allow
 timeouts ≥ 5 minutes for verification steps.
@@ -162,5 +161,5 @@ After first session run:
 | `make test` fails in pod | envtest/kubebuilder assets; network for sdk-go scripts |
 | PR not created | `gh` token scopes; branch push permissions |
 | Duplicate review replies | Clone `mcic-ai-helpers`; `check_replied.py` path |
-| `permission denied` on `go/pkg/mod/cache` | Set `GOMODCACHE`, `GOCACHE`, `GOPATH` under `/tmp` (see above) |
+| `permission denied` on `go/pkg/mod/cache` | `source .../go-env.sh` or upgrade agent-swarm + new session (see above) |
 | `make check` hangs / times out | Normal on first run; increase tool timeout; check network for lint curl |

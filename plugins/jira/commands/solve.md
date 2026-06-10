@@ -76,14 +76,18 @@ Use MCP tools `add_comment` and `update_issue` for Jira follow-up — not CLI/cu
 
 ### Verification commands (required)
 
-Run these before committing:
+Run **sequentially** (not in parallel). Use a shell timeout **≥ 15 minutes** per
+`make check` — lint often produces no output for several minutes while downloading
+golangci-lint.
 
 ```bash
-make check   # copyright + lint
-make test    # unit tests (envtest)
+source /path/to/mcic-ai-helpers/scripts/lib/go-env.sh   # agent-swarm pods
+make check   # copyright + lint (3–15 min typical)
+make test    # unit tests with envtest (5–15 min typical)
 ```
 
 Do NOT substitute `go test ./pkg/...` for `make test`.
+Do NOT run `make check` and `make test` in parallel.
 
 E2E (`make e2e-test-core`) is optional unless the issue explicitly requires
 integration coverage.

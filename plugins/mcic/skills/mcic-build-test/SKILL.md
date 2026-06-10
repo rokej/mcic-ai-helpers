@@ -9,12 +9,21 @@ Repository: `stolostron/managedcluster-import-controller`
 
 ## Required verification before commit/PR
 
-Run **both** in order:
+Run **sequentially** (never in parallel). Allow **10–20 minutes** total on first
+run — `make check` especially can show **no output for several minutes** while
+lint downloads tooling.
 
 ```bash
-make check   # copyright headers + OCM lint
-make test    # unit tests with envtest
+# Agent-swarm / restricted pods: writable Go caches
+source /path/to/mcic-ai-helpers/scripts/lib/go-env.sh
+
+cd /workspace/managedcluster-import-controller   # or local clone
+make check   # copyright headers + OCM lint (often 3–15 min, quiet at start)
+make test    # unit tests with envtest (often 5–15 min)
 ```
+
+Shell/tool timeout for `make check` alone: **≥ 900000 ms (15 min)**. Do not kill
+at 300000 ms (5 min) — that is too short for MCIC lint on cold cache.
 
 Do **not** substitute `go test ./pkg/...` for `make test`. The Makefile runs the
 full `GOPACKAGES` set with envtest setup and coverage.
@@ -23,8 +32,14 @@ full `GOPACKAGES` set with envtest setup and coverage.
 
 | Target | What it runs |
 |--------|--------------|
-| `check-copyright` | `build/check-copyright.sh` — IBM/Red Hat copyright headers |
-| `lint` | OCM sdk-go lint script (remote curl) |
+| `check-copyright` | `build/check-copyright.sh` — fast (~seconds) |
+| `lint` | OCM sdk-go lint script (remote curl) — **slow, may be silent** |
+
+Optional progress check before full `make check`:
+
+```bash
+make check-copyright   # quick sanity; still run full make check before commit
+```
 
 ## make test
 

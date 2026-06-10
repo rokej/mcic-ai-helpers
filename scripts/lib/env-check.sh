@@ -92,7 +92,7 @@ check_env() {
     exit 1
   fi
 
-  echo "Prerequisites OK (claude, gh, git, ${MCIC_PYTHON}, Jira MCP)"
+  echo "Prerequisites OK (claude, gh, git, ${MCIC_PYTHON:-n/a}, Jira MCP)"
 }
 
 check_env_with_jira() {

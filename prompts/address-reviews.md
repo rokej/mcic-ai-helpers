@@ -18,15 +18,14 @@ amending commits. **Reply footer:**
 
 **Duplicate check:** `/workspace/mcic-ai-helpers/plugins/utils/scripts/check_replied.py`
 
-**Go caches in agent-swarm pods** (before `make check` / `make test` if code may change):
+**Go caches in agent-swarm pods** — always before `make`:
 
 ```bash
-export GOMODCACHE=/tmp/gomodcache GOCACHE=/tmp/gocache GOPATH=/tmp/gopath
-mkdir -p "$GOMODCACHE" "$GOCACHE" "$GOPATH"
+source /workspace/mcic-ai-helpers/scripts/lib/go-env.sh
 ```
 
-If `permission denied` on `/home/node/go/pkg/mod`, set all three vars — `GOCACHE`
-alone is not enough.
+Or run `/workspace/mcic-ai-helpers/scripts/verify-mcic.sh check` (or `test` / `all`).
+If `permission denied` on `/home/node/go/pkg/mod`, `go-env.sh` was not sourced.
 
 ## Instructions
 
@@ -76,8 +75,8 @@ alone is not enough.
 
 7. **Verify** — only when you changed code (skip for reply-only questions with no edits):
    ```bash
-   export GOMODCACHE=/tmp/gomodcache GOCACHE=/tmp/gocache GOPATH=/tmp/gopath
-   mkdir -p "$GOMODCACHE" "$GOCACHE" "$GOPATH"
+   source /workspace/mcic-ai-helpers/scripts/lib/go-env.sh
+   cd /workspace/managedcluster-import-controller
    make check   # allow several minutes; remote lint + go list
    make test
    ```

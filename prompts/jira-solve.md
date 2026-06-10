@@ -16,8 +16,12 @@ or when the user names a key explicitly.
 ACM. No Jira CLI or curl.
 
 **Verification before commit/push:** `make check` then `make test` (not `go test ./pkg/...`).
-In agent-swarm pods set `GOMODCACHE=/tmp/gomodcache GOCACHE=/tmp/gocache GOPATH=/tmp/gopath`
-before `make` (see `docs/agent-swarm-setup.md`).
+Always run via helper (writable Go caches in agent-swarm pods):
+
+```bash
+source /workspace/mcic-ai-helpers/scripts/lib/go-env.sh
+# or: /workspace/mcic-ai-helpers/scripts/verify-mcic.sh check
+```
 
 **Branch:** `fix-ACM-<digits>`. Commits: Conventional Commits + `Signed-off-by`.
 
@@ -62,7 +66,15 @@ Optional disk copy: `/workspace/mcic-ai-helpers/prompts/_mcic-conventions.md` or
 
 7. **Implement**
    - Follow existing patterns; add unit tests for new behavior
-   - Run `make check` and `make test`; fix failures from your changes
+   - Run verification **sequentially** (never parallel). Use shell timeout **≥ 900000 ms**
+     for `make check` — it can be silent for minutes while lint downloads tools.
+     ```bash
+     source /workspace/mcic-ai-helpers/scripts/lib/go-env.sh
+     cd /workspace/managedcluster-import-controller
+     make check    # wait for completion; 5 min timeout is too short
+     make test
+     ```
+   - Fix failures from your changes
 
 8. **Commit**
    - Branch: `fix-<KEY>` (e.g. `fix-ACM-12345`)

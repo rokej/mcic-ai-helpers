@@ -82,17 +82,25 @@ export JIRA_SERVER_URL JIRA_EMAIL JIRA_ACCESS_TOKEN   # required for local fallb
 # or: export MCIC_SKIP_JIRA_MCP_SETUP=1               # host-provided Jira MCP
 
 ./scripts/run-jira-solve.sh ACM-12345
-./scripts/run-jira-solve.sh ACM-12345 origin --ci   # non-interactive
+./scripts/run-jira-solve.sh ACM-12345 origin --ci   # explicit non-interactive
 ```
+
+Defaults to **non-interactive** (`--ci`) so `claude -p` does not wait for plan
+approval. Set `MCIC_INTERACTIVE=1` for interactive plan review.
 
 What it does:
 
 1. Validates Jira MCP availability (host or local fallback) and `gh` auth
 2. Clones/updates `stolostron/managedcluster-import-controller`
 3. Writes `.claude/settings.json` and `.mcp.json` (optional local Jira MCP)
-4. Runs `claude -p "/jira:solve ACM-12345 origin"`
-5. Agent uses Jira MCP `get_issue`, implements fix, runs `make check` + `make test`
+4. Runs `claude -p` with `plugins/jira/commands/solve.md` as the runbook
+5. Agent uses Jira MCP `get_issue`, transitions to In Progress, runs `make check` + `make test`
 6. Creates a draft PR via `gh`
+
+**Troubleshooting:** If the run appears stuck, it is often `make check`/`make test`
+(5–15+ minutes). `Unknown command: /jira:solve` means an old script — update mcic-ai-helpers.
+For ACM-34995, PR [#1119](https://github.com/stolostron/managedcluster-import-controller/pull/1119)
+already exists; the agent should report and stop.
 
 ### Address review comments
 
